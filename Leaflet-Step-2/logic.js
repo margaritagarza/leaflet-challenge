@@ -52,6 +52,13 @@ function createFeatures(earthquakeData) {
   createMap(earthquakes);
 }
 
+ // Create a tectonic layer containing the features array on the tectonic object
+
+ // Load in geojson data
+var geoData ="PB2002_plates.json";
+
+var cityLayer =L.geoJSON(geoData).addTo(myMap);
+
 function createMap(earthquakes) {
 
   // Define streetmap and darkmap layers
@@ -90,7 +97,8 @@ function createMap(earthquakes) {
 
   // Create overlay object to hold our overlay layer
   var overlayMaps = {
-    Earthquakes: earthquakes
+    Earthquakes: earthquakes,
+    FaultLines: cityLayer
   };
 
   // Create our map, giving it the streetmap and earthquakes layers to display on load
