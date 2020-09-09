@@ -52,12 +52,8 @@ function createFeatures(earthquakeData) {
   createMap(earthquakes);
 }
 
- // Create a tectonic layer containing the features array on the tectonic object
-
- // Load in geojson data
-var geoData ="PB2002_plates.json";
-
-var cityLayer =L.geoJSON(geoData).addTo(myMap);
+  var geoData ="PB2002_plates.json";
+  var cityLayer =L.geoJSON(geoData);
 
 function createMap(earthquakes) {
 
