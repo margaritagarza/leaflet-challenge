@@ -103,35 +103,35 @@ function createMap(earthquakes) {
   });
 
   
-  // Create a layer control
-  // Pass in our baseMaps and overlayMaps
-  // Add the layer control to the map
-  L.control.layers(baseMaps, overlayMaps, {
-    collapsed: false
-  }).addTo(myMap);
+//   // Create a layer control
+//   // Pass in our baseMaps and overlayMaps
+//   // Add the layer control to the map
+//   L.control.layers(baseMaps, overlayMaps, {
+//     collapsed: false
+//   }).addTo(myMap);
 
-//Set up the legend
+// //Set up the legend
 
-  var legend = L.control({position: 'bottomright'});
+//   var legend = L.control({position: 'bottomright'});
 
-  legend.onAdd = function (map) {
+//   legend.onAdd = function (map) {
   
-      var div = L.DomUtil.create('div', 'info legend'),
-          grades = ["0-1", "1-2", "2-3", "3-4", "4-5", "5+"],
-          colors = ['#99ff33', '#ccff99', '#ffdb4d',  '#ffaa00', '#ff9933', '#ff6600'];
-          labels = [];
+//       var div = L.DomUtil.create('div', 'info legend'),
+//           grades = ["0-1", "1-2", "2-3", "3-4", "4-5", "5+"],
+//           colors = ['#99ff33', '#ccff99', '#ffdb4d',  '#ffaa00', '#ff9933', '#ff6600'];
+//           labels = [];
   
-      // loop through our density intervals and generate a label with a colored square for each interval
-      for (var i = 0; i < grades.length; i++) {
-          div.innerHTML +=
-          '<i style="background:' + (colors[i] + 1) + '"></i> ' +
-          (grades[i ]  + '<br>' );
-      }
-   return div;
-  };
+//       // loop through our density intervals and generate a label with a colored square for each interval
+//       for (var i = 0; i < grades.length; i++) {
+//           div.innerHTML +=
+//           '<i style="background:' + (colors[i] + 1) + '"></i> ' +
+//           (grades[i ]  + '<br>' );
+//       }
+//    return div;
+//   };
   
-  legend.addTo(myMap);
-};
+//   legend.addTo(myMap);
+// };
 
 // // Set up the legend
 // var legend = L.control({ position: "bottomright" });
@@ -143,7 +143,7 @@ function createMap(earthquakes) {
 
 //   div.innerHTML = ""
 //   limits.forEach(function(limits, index) {
-//     labels.push("<i style=\"background-color: '" + colors[index] + "'\"> </i>" + limits[index]+"<br>");
+//     labels.push("<li style=\"background-color: '" + colors[index] + "'\"> </li>" + limits[index]+"<br>");
 //   });
 
 //   div.innerHTML += labels.join("");
@@ -154,3 +154,26 @@ function createMap(earthquakes) {
 // legend.addTo(myMap);
 // };
 
+// Set up the legend
+var legend = L.control({ position: "bottomright" });
+legend.onAdd = function() {
+  var div = L.DomUtil.create("div", "info legend");
+  var colors = ["#99ff33", "#ccff99", "#ffdb4d",  "#ffaa00", "#ff9933", "#ff6600"];
+  var limits = ["0-1", "1-2", "2-3", "3-4", "4-5", "5+"];
+  var labels = []
+  // Add min & max
+  var legendInfo = "<h1>Magnitude Scale</h1>" +
+    "<div class=\"labels\">" +
+      "<div class=\"min\">" + limits[0] + "</div>" +
+      "<div class=\"max\">" + limits[limits.length - 1] + "</div>" +
+    "</div>";
+  div.innerHTML = legendInfo;
+  limits.forEach(function(limit, index) {
+    labels.push("<li style=\"background-color: " + colors[index] + "\"></li>");
+  });
+  div.innerHTML += "<ul>" + labels.join("") + "</ul>";
+  return div;
+};
+// Adding legend to the map
+legend.addTo(myMap);
+};
