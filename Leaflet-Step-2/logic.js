@@ -1,13 +1,11 @@
 // Store our API endpoint inside queryUrl
 var queryUrl = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson";
 
-let geoData ="https://github.com/fraxen/tectonicplates/raw/master/GeoJSON/PB2002_plates.json";
-
 // Perform a GET request to the query URL
 d3.json(queryUrl, function(data) {
   // Once we get a response, send the data.features object to the createFeatures function
   createFeatures(data.features);
-});
+
 
 function createFeatures(earthquakeData) {
 
@@ -82,14 +80,20 @@ function createMap(earthquakes) {
   accessToken: API_KEY
 });
 
-  var faultmap = L.geoJson("https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json", {
-    // style: function (feature) {
-    //   return {color: feature.properties.color};
-    // }
-    // onEachFeature: function (feature, layer) {
-    //   layer.bindPopup(feature.properties.description);
-    // }
-  });
+var faultmap = new L.LayerGroup();
+
+
+
+// var faultmap = L.geoJson("https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_plates.json", {
+//   style: function(feature) {
+//       return {
+//           color: "black",
+//           fill: false,
+//           opacity: 1,
+//           clickable: false
+//       };
+//   },
+// });
 
   // Define a baseMaps object to hold our base layers
   var baseMaps = {
@@ -145,3 +149,5 @@ legend.onAdd = function() {
 // Adding legend to the map
 legend.addTo(myMap);
 };
+
+});
