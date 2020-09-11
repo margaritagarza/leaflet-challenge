@@ -1,5 +1,7 @@
 // Store our API endpoint inside queryUrl
-var queryUrl = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson"
+var queryUrl = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson";
+
+let geoData ="https://github.com/fraxen/tectonicplates/raw/master/GeoJSON/PB2002_plates.json";
 
 // Perform a GET request to the query URL
 d3.json(queryUrl, function(data) {
@@ -52,9 +54,6 @@ function createFeatures(earthquakeData) {
   createMap(earthquakes);
 }
 
-  var geoData ="PB2002_plates.json";
-  var cityLayer =L.geoJSON(geoData);
-
 function createMap(earthquakes) {
 
   // Define streetmap and darkmap layers
@@ -83,6 +82,14 @@ function createMap(earthquakes) {
   accessToken: API_KEY
 });
 
+  var faultmap = L.geoJson("https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json", {
+    // style: function (feature) {
+    //   return {color: feature.properties.color};
+    // }
+    // onEachFeature: function (feature, layer) {
+    //   layer.bindPopup(feature.properties.description);
+    // }
+  });
 
   // Define a baseMaps object to hold our base layers
   var baseMaps = {
@@ -94,7 +101,7 @@ function createMap(earthquakes) {
   // Create overlay object to hold our overlay layer
   var overlayMaps = {
     Earthquakes: earthquakes,
-    FaultLines: cityLayer
+    FaultLines: faultmap
   };
 
   // Create our map, giving it the streetmap and earthquakes layers to display on load
@@ -103,7 +110,7 @@ function createMap(earthquakes) {
       37.09, -95.71
     ],
     zoom: 5,
-    layers: [streetmap, earthquakes, cityLayer]
+    layers: [streetmap, earthquakes]
   });
 
   
@@ -114,47 +121,27 @@ function createMap(earthquakes) {
     collapsed: false
   }).addTo(myMap);
 
-//Set up the legend
 
-  var legend = L.control({position: 'bottomright'});
-
-  legend.onAdd = function (map) {
-  
-      var div = L.DomUtil.create('div', 'info legend'),
-          grades = ["0-1", "1-2", "2-3", "3-4", "4-5", "5+"],
-          colors = ['#99ff33', '#ccff99', '#ffdb4d',  '#ffaa00', '#ff9933', '#ff6600'];
-          labels = [];
-  
-      // loop through our density intervals and generate a label with a colored square for each interval
-      for (var i = 0; i < grades.length; i++) {
-          div.innerHTML +=
-          '<i style="background:' + (colors[i] + 1) + '"></i> ' +
-          (grades[i ]  + '<br>' );
-      }
-   return div;
-  };
-  
-  legend.addTo(myMap);
+// Set up the legend
+var legend = L.control({ position: "bottomright" });
+legend.onAdd = function() {
+  var div = L.DomUtil.create("div", "info legend");
+  var colors = ["#99ff33", "#ccff99", "#ffdb4d",  "#ffaa00", "#ff9933", "#ff6600"];
+  var limits = ["0-1", "1-2", "2-3", "3-4", "4-5", "5+"];
+  var labels = []
+  // Add min & max
+  var legendInfo = "<h1>Magnitude Scale</h1>" +
+    "<div class=\"labels\">" +
+      "<div class=\"min\">" + limits[0] + "</div>" +
+      "<div class=\"max\">" + limits[limits.length - 1] + "</div>" +
+    "</div>";
+  div.innerHTML = legendInfo;
+  limits.forEach(function(limit, index) {
+    labels.push("<li style=\"background-color: " + colors[index] + "\"></li>");
+  });
+  div.innerHTML += "<ul>" + labels.join("") + "</ul>";
+  return div;
 };
-
-// // Set up the legend
-// var legend = L.control({ position: "bottomright" });
-// legend.onAdd = function() {
-//   var div = L.DomUtil.create("div", "legend");
-//   var colors = ["#99ff33", "#ccff99", "#ffdb4d",  "#ffaa00", "#ff9933", "#ff6600"];
-//   var limits = ["0-1", "1-2", "2-3", "3-4", "4-5", "5+"];
-//   var labels = []
-
-//   div.innerHTML = ""
-//   limits.forEach(function(limits, index) {
-//     labels.push("<i style=\"background-color: '" + colors[index] + "'\"> </i>" + limits[index]+"<br>");
-//   });
-
-//   div.innerHTML += labels.join("");
-//   return div;
-// };
-
-// // Adding legend to the map
-// legend.addTo(myMap);
-// };
-
+// Adding legend to the map
+legend.addTo(myMap);
+};
