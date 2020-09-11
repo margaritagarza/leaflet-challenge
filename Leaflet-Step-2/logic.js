@@ -1,6 +1,8 @@
 // Store our API endpoint inside queryUrl
 var queryUrl = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson";
 
+let faultmap = new L.LayerGroup();
+
 // Perform a GET request to the query URL
 d3.json(queryUrl, function(data) {
   // Once we get a response, send the data.features object to the createFeatures function
@@ -80,21 +82,6 @@ function createMap(earthquakes) {
   accessToken: API_KEY
 });
 
-var faultmap = new L.LayerGroup();
-
-
-
-// var faultmap = L.geoJson("https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_plates.json", {
-//   style: function(feature) {
-//       return {
-//           color: "black",
-//           fill: false,
-//           opacity: 1,
-//           clickable: false
-//       };
-//   },
-// });
-
   // Define a baseMaps object to hold our base layers
   var baseMaps = {
     "Street Map": streetmap,
@@ -149,5 +136,18 @@ legend.onAdd = function() {
 // Adding legend to the map
 legend.addTo(myMap);
 };
+
+d3.json("https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json",
+    function(quakedata) {
+      // Adding our geoJSON data, along with style information, to the tectonicplates
+      // layer.
+      L.geoJson(quakedata, {
+        color: "orange",
+        weight: 3
+      })
+      .addTo(faultmap);
+      // Then add the tectonicplates layer to the map.
+      faultmap.addTo(myMap);
+    });
 
 });
